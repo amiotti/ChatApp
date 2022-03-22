@@ -21,16 +21,22 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors());
 let arr = [];
+
 //Run when clients connects
 io.on("connection", (socket) => {
   console.log(`New User Connected. ID:${socket.id}`);
 
   //Welcome current user
-  socket.emit("message", formatMessage("MiouriChat", "Welcome to the chat!"));
-
-  socket.on("connected", (msg) => {
-    arr.push(msg);
+  socket.on("welcome", (msg) => {
+    arr.push(msg.username);
     io.emit("userconnected", arr);
+    io.emit(
+      "welcomemessage",
+      formatMessage(
+        "MiouriChat_Bot",
+        `Welcome to ${msg.room} room, ${msg.username}!`
+      )
+    );
   });
 
   //Broadcast when user connects
@@ -41,6 +47,7 @@ io.on("connection", (socket) => {
 
   //Run when clients disconects
   socket.on("disconnect", () => {
+    console.log("User Disconnected");
     arr = [];
     io.emit("message", formatMessage("MiouriChat", "A user has left the chat"));
   });
