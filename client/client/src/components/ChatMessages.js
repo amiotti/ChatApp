@@ -10,9 +10,11 @@ export default function ChatMessages({ users, room }) {
   const { state } = useLocation(); //to get data from <Home/> component
 
   useEffect(() => {
+    socket.once("welcomemessage", (msg) => {
+      setMessages((oldmessage) => [...oldmessage, msg]);
+    });
     socket.on("message", (msg) => {
       setMessages((oldmessage) => [...oldmessage, msg]);
-      //console.log(messages);
     });
 
     return () => {
@@ -22,24 +24,26 @@ export default function ChatMessages({ users, room }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    socket.emit("chatMessage", {
-      user: state.username,
-      text: message,
-    });
 
-    setMessage("");
+    if (message) {
+      socket.emit("chatMessage", {
+        user: state.username,
+        text: message,
+      });
+
+      setMessage("");
+    }
   };
 
-  const outputMessage = (msg) => {
+  const outputMessage = (msg) => (
     <div className="message">
       <p className="meta">
         {msg.username}
         <span>{msg.time}</span>
       </p>
       <p className="text">{msg.text}</p>
-    </div>;
-  };
-
+    </div>
+  );
   return (
     <>
       <main className="chat-main">
@@ -57,8 +61,8 @@ export default function ChatMessages({ users, room }) {
             ))}
           </ul>
         </div>
-        <div className="chat-messages" value={messages}>
-          {messages.map((msg) => outputMessage(msg))}
+        <div className="chat-messages">
+          {messages && messages.map((msg) => outputMessage(msg))}
         </div>
       </main>
       <div className="chat-form-container">

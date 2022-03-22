@@ -11,9 +11,12 @@ export default function Home() {
 
   useEffect(() => {
     if (connected && room && username) {
-      navigate(`/chatroom/?user=${username}&room=${room}`, {
-        state: { username, room, connected },
-      });
+      navigate(
+        `/chatroom/?user=${username}&room=${room}&connected=${connected}`,
+        {
+          state: { username, room, connected },
+        }
+      );
     }
   }, [connected, room, username, navigate]);
 
