@@ -40,16 +40,19 @@ io.on("connection", (socket) => {
   });
 
   //Broadcast when user connects
-  socket.broadcast.emit(
-    "message",
-    formatMessage("MiouriChat", "A user has joined the chat")
-  );
+  // socket.broadcast.emit(
+  //   "message",
+  //   formatMessage("MiouriChat", "A user has joined the chat")
+  // );
 
-  //Run when clients disconects
-  socket.on("disconnect", () => {
-    console.log("User Disconnected");
-    arr = [];
-    io.emit("message", formatMessage("MiouriChat", "A user has left the chat"));
+  //User Disconnection
+  socket.on("userdisconnection", (msg) => {
+    arr = arr.filter((el) => el !== msg);
+    io.emit("reloadusers", arr);
+    io.emit(
+      "message",
+      formatMessage("MiouriChat_Bot", `${msg} has left the chat... :(`)
+    );
   });
 
   //Listen to chat message from client

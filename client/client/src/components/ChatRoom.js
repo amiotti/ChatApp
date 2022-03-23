@@ -17,7 +17,7 @@ export default function ChatRoom() {
 
   useEffect(() => {
     socket.emit("welcome", { username: getUser, room: getRoom });
-    socket.on("userconnected", (msg) => setUsers(msg));
+    //socket.on("userconnected", (msg) => (console.log(msg), setUsers(msg)));
 
     return () => {
       socket.off();
@@ -35,16 +35,18 @@ export default function ChatRoom() {
           className="btn"
           onClick={(e) => {
             e.preventDefault();
-            //console.log(users.filter((user) => user != getUser));
 
-            setUsers(users.filter((user) => user != getUser));
+            socket.emit("userdisconnection", getUser);
+
+            //setUsers(users.filter((user) => user !== getUser));
+
             navigate("/");
           }}
         >
           Leave Room
         </a>
       </header>
-      <ChatMessages users={users} room={getRoom} />
+      <ChatMessages users={users} room={getRoom} setUsers={setUsers} />
       <script
         src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
         integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="

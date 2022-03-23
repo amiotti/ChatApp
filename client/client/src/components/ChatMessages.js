@@ -3,7 +3,7 @@ import socket from "./Socket";
 import { useLocation } from "react-router";
 import "../App.css";
 
-export default function ChatMessages({ users, room }) {
+export default function ChatMessages({ users, room, setUsers }) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
 
@@ -16,6 +16,15 @@ export default function ChatMessages({ users, room }) {
     socket.on("message", (msg) => {
       setMessages((oldmessage) => [...oldmessage, msg]);
     });
+    socket.on(
+      "userconnected",
+      (msg) => (setUsers(msg), console.log(`USER CONNECTED: ${msg}`))
+    );
+
+    socket.on(
+      "reloadusers",
+      (msg) => (setUsers(msg), console.log(`UPDATED USERS: ${msg}`))
+    ); //updates users after a disconnection
 
     return () => {
       socket.off();
