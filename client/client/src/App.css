@@ -27,6 +27,11 @@ ul {
 
 a {
   text-decoration: none;
+  color: #fff;
+}
+
+a:hover {
+  color: orange;
 }
 
 .btn {
@@ -162,6 +167,12 @@ a {
 }
 
 .join-main input[type="text"] {
+  font-size: 16px;
+  padding: 5px;
+  height: 40px;
+  width: 100%;
+}
+.join-main input[type="password"] {
   font-size: 16px;
   padding: 5px;
   height: 40px;

@@ -7,7 +7,7 @@ import socket from "./Socket";
 
 export default function ChatRoom() {
   const [users, setUsers] = useState([]);
-  //const { state } = useLocation(); //to get data from <Home/> component
+
   const navigate = useNavigate();
   const [getParams] = useSearchParams(); // to get parameters from URL
 
@@ -37,8 +37,6 @@ export default function ChatRoom() {
             e.preventDefault();
 
             socket.emit("userdisconnection", getUser);
-
-            //setUsers(users.filter((user) => user !== getUser));
 
             navigate("/");
           }}

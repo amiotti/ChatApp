@@ -1,28 +1,45 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../App.css";
 import socket from "./Socket";
+import { useAlert } from "react-alert";
 
 export default function Home() {
   const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [room, setRoom] = useState("");
   const [connected, setConnected] = useState(false);
   const navigate = useNavigate();
 
+  const alert = useAlert();
+
   useEffect(() => {
     if (connected && room && username) {
-      navigate(
-        `/chatroom/?user=${username}&room=${room}&connected=${connected}`,
-        {
-          state: { username, room, connected },
+      socket.on("userlogged", (msg) => {
+        if (msg) {
+          navigate(
+            `/chatroom/?user=${username}&room=${room}&connected=${connected}`,
+            {
+              state: { username, room, connected },
+            }
+          );
+        } else if (!msg) {
+          alert.show("Invalid Password");
+          //navigate("/register");
         }
-      );
+      });
+      socket.on("needregister", (msg) => {
+        if (msg) {
+          setTimeout(() => navigate("/register"), 1500);
+          alert.show("Please Sign Up! Redirecting...");
+        }
+      });
     }
   }, [connected, room, username, navigate]);
 
   const handleClick = (e) => {
     e.preventDefault();
-    //socket.emit("connected", username);
+    socket.emit("login", { username, password });
     setConnected(true);
   };
 
@@ -48,6 +65,18 @@ export default function Home() {
             />
           </div>
           <div className="form-control">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              name="password"
+              id="pasword"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter password..."
+              required
+            />
+          </div>
+          <div className="form-control">
             <label htmlFor="room">Room</label>
             <select
               name="room"
@@ -55,6 +84,7 @@ export default function Home() {
               value={room}
               onChange={(e) => setRoom(e.target.value)}
             >
+              <option value="">Select Room...</option>
               <option value="JavaScript">JavaScript</option>
               <option value="Python">Python</option>
               <option value="PHP">PHP</option>
@@ -63,7 +93,7 @@ export default function Home() {
               <option value="Java">Java</option>
             </select>
           </div>
-
+          <Link to="/register">Register</Link>
           <button
             type="submit"
             className="btn"

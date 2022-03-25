@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import socket from "./Socket";
 import { useLocation } from "react-router";
 import "../App.css";
+import shortid from "shortid";
 
 export default function ChatMessages({ users, room, setUsers }) {
   const [message, setMessage] = useState("");
@@ -45,7 +46,7 @@ export default function ChatMessages({ users, room, setUsers }) {
   };
 
   const outputMessage = (msg) => (
-    <div className="message">
+    <div className="message" key={shortid.generate()}>
       <p className="meta">
         {msg.username}
         <span>{msg.time}</span>
@@ -66,7 +67,7 @@ export default function ChatMessages({ users, room, setUsers }) {
           </h3>
           <ul className="users">
             {users.map((user) => (
-              <li key={socket.id}>{user}</li>
+              <li key={shortid.generate()}>{user}</li>
             ))}
           </ul>
         </div>
