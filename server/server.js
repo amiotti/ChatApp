@@ -21,6 +21,12 @@ const io = new Server(server, {
 });
 
 const formatMessage = require("./utils/messages");
+const {
+  userJoin,
+  userDisconnect,
+  allUsers,
+  onDisconnect,
+} = require("./utils/users");
 
 //MIDDLEWARES
 app.use(express.json());
@@ -39,9 +45,16 @@ io.on("connection", (socket) => {
 
   //Welcome current user
   socket.on("welcome", (msg) => {
-    arr.push(msg.username);
-    io.emit("userconnected", arr);
-    io.emit(
+    socket.join(msg.room);
+    const user = userJoin(socket.id, msg.username, msg.room);
+    const users = allUsers(msg.room);
+
+    console.log(users);
+
+    //arr.push(msg.username);
+
+    io.to(msg.room).emit("userconnected", users);
+    io.to(msg.room).emit(
       "welcomemessage",
       formatMessage(
         "MiouriChat_Bot",
@@ -58,23 +71,25 @@ io.on("connection", (socket) => {
 
   //User Disconnection
   socket.on("userdisconnection", (msg) => {
-    arr = arr.filter((el) => el !== msg);
-    io.emit("reloadusers", arr);
-    io.emit(
+    socket.join(msg.room);
+    const users = userDisconnect(socket.id, msg.username, msg.room);
+    //console.log(users);
+    io.to(msg.room).emit("reloadusers", users);
+    io.to(msg.room).emit(
       "message",
-      formatMessage("MiouriChat_Bot", `${msg} has left the chat... :(`)
+      formatMessage("MiouriChat_Bot", `${msg.username} has left the chat... :(`)
     );
   });
 
   socket.on("disconnect", (msg) => {
-    if (arr.length === 1) {
-      arr = [];
-    }
+    socket.join(msg.room);
+    //onDisconnect();
   });
 
   //Listen to chat message from client
   socket.on("chatMessage", (msg) => {
-    io.emit("message", formatMessage(msg.user, msg.text));
+    socket.join(msg.room);
+    io.to(msg.room).emit("message", formatMessage(msg.user, msg.text));
   });
 
   //Add user to DB

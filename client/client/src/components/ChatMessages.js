@@ -3,10 +3,15 @@ import socket from "./Socket";
 import { useLocation } from "react-router";
 import "../App.css";
 import shortid from "shortid";
+import { useSearchParams } from "react-router-dom";
 
 export default function ChatMessages({ users, room, setUsers }) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+
+  const [getParams] = useSearchParams();
+  const getUser = getParams.get("user");
+  const getRoom = getParams.get("room");
 
   const { state } = useLocation(); //to get data from <Home/> component
 
@@ -19,7 +24,7 @@ export default function ChatMessages({ users, room, setUsers }) {
     });
     socket.on(
       "userconnected",
-      (msg) => (setUsers(msg), console.log(`USER CONNECTED: ${msg}`))
+      (msg) => (setUsers(msg), console.log(`USER CONNECTED: ${msg.username}`))
     );
 
     socket.on(
@@ -37,8 +42,9 @@ export default function ChatMessages({ users, room, setUsers }) {
 
     if (message) {
       socket.emit("chatMessage", {
-        user: state.username,
+        user: getUser,
         text: message,
+        room: getRoom,
       });
 
       setMessage("");
@@ -67,7 +73,7 @@ export default function ChatMessages({ users, room, setUsers }) {
           </h3>
           <ul className="users">
             {users.map((user) => (
-              <li key={shortid.generate()}>{user}</li>
+              <li key={shortid.generate()}>{user.username}</li>
             ))}
           </ul>
         </div>

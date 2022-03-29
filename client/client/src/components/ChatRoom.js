@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import "../App.css";
-//import { useLocation } from "react-router";
 import ChatMessages from "./ChatMessages";
 import socket from "./Socket";
 
@@ -13,7 +12,6 @@ export default function ChatRoom() {
 
   const getUser = getParams.get("user");
   const getRoom = getParams.get("room");
-  const getConnected = getParams.get("connected");
 
   useEffect(() => {
     socket.emit("welcome", { username: getUser, room: getRoom });
@@ -36,7 +34,10 @@ export default function ChatRoom() {
           onClick={(e) => {
             e.preventDefault();
 
-            socket.emit("userdisconnection", getUser);
+            socket.emit("userdisconnection", {
+              username: getUser,
+              room: getRoom,
+            });
 
             navigate("/");
           }}
