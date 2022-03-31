@@ -37,7 +37,6 @@ app.use((req, res, next) => {
   next();
 });
 app.use(cookieparser());
-let arr = [];
 
 //Run when clients connects
 io.on("connection", (socket) => {
@@ -46,10 +45,10 @@ io.on("connection", (socket) => {
   //Welcome current user
   socket.on("welcome", (msg) => {
     socket.join(msg.room);
-    const user = userJoin(socket.id, msg.username, msg.room);
+    userJoin(socket.id, msg.username, msg.room);
     const users = allUsers(msg.room);
 
-    console.log(users);
+    //console.log(users);
 
     //arr.push(msg.username);
 
@@ -79,10 +78,12 @@ io.on("connection", (socket) => {
       "message",
       formatMessage("MiouriChat_Bot", `${msg.username} has left the chat... :(`)
     );
+    console.log("USER DISCONNECTED");
   });
 
   socket.on("disconnect", (msg) => {
     socket.join(msg.room);
+    console.log("USER DISCONNECTED");
     //onDisconnect();
   });
 

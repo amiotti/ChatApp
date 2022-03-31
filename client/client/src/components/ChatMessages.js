@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import socket from "./Socket";
-import { useLocation } from "react-router";
+//import { useLocation } from "react-router";
 import "../App.css";
 import shortid from "shortid";
 import { useSearchParams } from "react-router-dom";
@@ -13,7 +13,7 @@ export default function ChatMessages({ users, room, setUsers }) {
   const getUser = getParams.get("user");
   const getRoom = getParams.get("room");
 
-  const { state } = useLocation(); //to get data from <Home/> component
+  //const { state } = useLocation(); //to get data from <Home/> component
 
   useEffect(() => {
     socket.once("welcomemessage", (msg) => {
@@ -22,15 +22,9 @@ export default function ChatMessages({ users, room, setUsers }) {
     socket.on("message", (msg) => {
       setMessages((oldmessage) => [...oldmessage, msg]);
     });
-    socket.on(
-      "userconnected",
-      (msg) => (setUsers(msg), console.log(`USER CONNECTED: ${msg.username}`))
-    );
+    socket.on("userconnected", (msg) => setUsers(msg));
 
-    socket.on(
-      "reloadusers",
-      (msg) => (setUsers(msg), console.log(`UPDATED USERS: ${msg}`))
-    ); //updates users after a disconnection
+    socket.on("reloadusers", (msg) => setUsers(msg)); //updates users after a disconnection
 
     return () => {
       socket.off();
@@ -51,15 +45,25 @@ export default function ChatMessages({ users, room, setUsers }) {
     }
   };
 
-  const outputMessage = (msg) => (
-    <div className="message" key={shortid.generate()}>
-      <p className="meta">
-        {msg.username}
-        <span>{msg.time}</span>
-      </p>
-      <p className="text">{msg.text}</p>
-    </div>
-  );
+  const outputMessage = (msg) =>
+    getUser === msg.username ? (
+      <div className="messagesender" key={shortid.generate()}>
+        <p className="meta">
+          {msg.username}
+          <span>{msg.time}</span>
+        </p>
+        <p className="text">{msg.text}</p>
+      </div>
+    ) : (
+      <div className="messagereceiver" key={shortid.generate()}>
+        <p className="meta">
+          {msg.username}
+          <span>{msg.time}</span>
+        </p>
+        <p className="text">{msg.text}</p>
+      </div>
+    );
+
   return (
     <>
       <main className="chat-main">

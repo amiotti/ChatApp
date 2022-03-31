@@ -43,6 +43,8 @@ export default function Home() {
     setConnected(true);
   };
 
+  const createRoom = (e) => {};
+
   return (
     <div className="join-container">
       <header className="join-header">
