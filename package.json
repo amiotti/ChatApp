@@ -2,9 +2,15 @@
     "name": "ChatApp",
     "version": "0.0.1",
     "description": "Chat App with socket.io",
+    "main":"server.js",
+    "engines":{
+        "node":"16.13.0",
+        "npm":"8.1.0"
+    },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "nodemon server.js"
+        "start": "nodemon server.js",
+        "heroku-postbuild":"cd client && npm i && npm run build"
     },
     "dependencies": {
         "cookie-parser": "^1.4.6",
