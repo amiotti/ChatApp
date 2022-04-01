@@ -7,10 +7,10 @@ const devConfig = `postgres://${process.env.DB_USER}:${process.env.DB_PASS}@${pr
 const proConfig = process.env.DB_URL;
 
 const db = new Sequelize(
-  process.env.NODE_ENV === "production" ? proConfig : devConfig,
-  {
-    logging: false,
-  }
+  process.env.NODE_ENV === "production" ? proConfig : devConfig
+  // {
+  //   logging: false,
+  // }
 );
 
 module.exports = db;
