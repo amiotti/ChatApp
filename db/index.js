@@ -7,7 +7,8 @@ const devConfig = `postgres://${process.env.DB_USER}:${process.env.DB_PASS}@${pr
 const proConfig = process.env.DATABASE_URL;
 
 const db = new Sequelize(
-  process.env.NODE_ENV === "production" ? proConfig : devConfig
+  process.env.NODE_ENV === "production" ? proConfig : devConfig,
+  { dialect: "postgres" }
   // {
   //   logging: false,
   // }
