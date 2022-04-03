@@ -32,7 +32,7 @@ app.use(cors());
 if (process.env.NODE_ENV === "production") {
   //server static content
   //npm run build
-  app.use(server.static(path.join(__dirname, "client/build")));
+  app.use(express.static(path.join(__dirname, "client/build")));
 }
 
 //Run when clients connects
