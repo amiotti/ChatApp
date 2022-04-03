@@ -133,7 +133,7 @@ io.on("connection", (socket) => {
 //RUN SERVER AND CONNECT DB
 const force = false;
 db.sync(force).then(() => {
-  console.log(`Connected to DB: ${process.env.DB} `);
+  console.log(`Connected to DB: ${process.env.DB} || Production DB `);
 
   server.listen(PORT, () => {
     console.log(`Server listening on PORT: ${PORT} `);
