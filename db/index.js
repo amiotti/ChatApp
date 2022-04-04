@@ -8,15 +8,25 @@ const proConfig = process.env.DATABASE_URL;
 
 const db = new Sequelize(
   process.env.NODE_ENV === "production" ? proConfig : devConfig,
-  {
-    dialect: "postgres",
-    dialectOptions: {
-      // ssl: {
-      //   require: true, // This will help you. But you will see new error
-      //   rejectUnauthorized: false, // This line will fix new error
-      // },
-    },
-  }
+  process.env.NODE_ENV === "production"
+    ? {
+        dialect: "postgres",
+        dialectOptions: {
+          ssl: {
+            require: true, // This will help you. But you will see new error
+            rejectUnauthorized: false, // This line will fix new error
+          },
+        },
+      }
+    : {
+        dialect: "postgres",
+        dialectOptions: {
+          // ssl: {
+          //   require: true, // This will help you. But you will see new error
+          //   rejectUnauthorized: false, // This line will fix new error
+          // },
+        },
+      }
 
   // {
   //   logging: false,
