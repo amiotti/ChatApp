@@ -11,10 +11,15 @@ export default function RegisterForm() {
   const alert = useAlert();
 
   const handleSubmit = () => {
-    socket.emit("newuser", { user, password });
+    let pattern = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&^_-]).{8,}/;
+    if (pattern.test(password)) {
+      socket.emit("newuser", { user, password });
 
-    setTimeout(() => navigate("/"), 1500);
-    alert.show("Signed Up.Redirecting to login ...");
+      setTimeout(() => navigate("/"), 1500);
+      alert.show("Signed Up.Redirecting to login ...");
+    } else {
+      alert.show("Pass must contain at least 8 char.");
+    }
   };
 
   return (

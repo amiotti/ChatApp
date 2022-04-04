@@ -11,10 +11,10 @@ const db = new Sequelize(
   {
     dialect: "postgres",
     dialectOptions: {
-      ssl: {
-        require: true, // This will help you. But you will see new error
-        rejectUnauthorized: false, // This line will fix new error
-      },
+      // ssl: {
+      //   require: true, // This will help you. But you will see new error
+      //   rejectUnauthorized: false, // This line will fix new error
+      // },
     },
   }
 
