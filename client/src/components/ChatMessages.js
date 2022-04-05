@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import socket from "./Socket";
-//import { useLocation } from "react-router";
 import "../App.css";
 import shortid from "shortid";
 import { useSearchParams } from "react-router-dom";
@@ -13,7 +12,10 @@ export default function ChatMessages({ users, room, setUsers }) {
   const getUser = getParams.get("user");
   const getRoom = getParams.get("room");
 
-  //const { state } = useLocation(); //to get data from <Home/> component
+  const messagesEndRef = useRef(null);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     socket.once("welcomemessage", (msg) => {
@@ -25,6 +27,8 @@ export default function ChatMessages({ users, room, setUsers }) {
     socket.on("userconnected", (msg) => setUsers(msg));
 
     socket.on("reloadusers", (msg) => setUsers(msg)); //updates users after a disconnection
+
+    scrollToBottom();
 
     return () => {
       socket.off();
@@ -47,7 +51,11 @@ export default function ChatMessages({ users, room, setUsers }) {
 
   const outputMessage = (msg) =>
     getUser === msg.username ? (
-      <div className="messagesender" key={shortid.generate()}>
+      <div
+        className="messagesender"
+        key={shortid.generate()}
+        ref={messagesEndRef}
+      >
         <p className="meta">
           {msg.username}
           <span>{msg.time}</span>
@@ -55,7 +63,11 @@ export default function ChatMessages({ users, room, setUsers }) {
         <p className="text">{msg.text}</p>
       </div>
     ) : (
-      <div className="messagereceiver" key={shortid.generate()}>
+      <div
+        className="messagereceiver"
+        key={shortid.generate()}
+        ref={messagesEndRef}
+      >
         <p className="meta">
           {msg.username}
           <span>{msg.time}</span>

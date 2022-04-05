@@ -132,7 +132,7 @@ a:hover {
 .chat-messages .messagesender .meta {
   font-size: 15px;
   font-weight: bold;
-  color: var(--dark-color-b);
+  color: #ffffff;
   opacity: 0.7;
   margin-bottom: 7px;
 }
